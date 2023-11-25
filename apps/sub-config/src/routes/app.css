@@ -1,0 +1,6 @@
+.formcontainer {
+}
+
+.formcontainer label {
+  @apply block w-full;
+}

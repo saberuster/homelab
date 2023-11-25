@@ -1,0 +1,14 @@
+{
+  "files": [],
+  "references": [
+    {
+      "path": "apps/sub-config"
+    },
+    {
+      "path": "packages/form"
+    },
+    {
+      "path": "packages/common"
+    }
+  ]
+}
