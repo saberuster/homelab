@@ -1,7 +1,6 @@
 {
   "name": "@homelab/sub-config",
   "version": "1.0.0",
-  "description": "Demo App with Routing built-in (recommended)",
   "private": true,
   "trustedDependencies": [
     "sharp"
@@ -31,15 +30,16 @@
     "@prisma/client": "5.3.1",
     "@tailwindcss/forms": "^0.5.7",
     "autoprefixer": "^10.4.16",
-    "postcss": "^8.4.31",
-    "prisma": "^5.3.1",
+    "postcss": "^8.4.32",
+    "prisma": "^5.6.0",
     "tailwindcss": "3.3.3",
-    "undici": "^5.28.0"
+    "undici": "^5.28.2"
   },
   "dependencies": {
     "@homelab/common": "workspace:*",
     "@homelab/form": "workspace:*",
-    "@modular-forms/qwik": "^0.21.0",
-    "valibot": "^0.21.0"
+    "@modular-forms/qwik": "^0.21.2",
+    "clsx": "^2.0.0",
+    "dotenv": "^16.3.1"
   }
 }

@@ -1,35 +1,33 @@
 import { $, component$, useStylesScoped$ } from "@builder.io/qwik"
-import { routeLoader$, type DocumentHead } from "@builder.io/qwik-city"
+import { routeLoader$, type DocumentHead, z } from "@builder.io/qwik-city"
 import {
   type InitialValues,
   useForm,
   valiForm$,
   getValues,
   formAction$,
-  FieldElementProps,
 } from "@modular-forms/qwik"
-import { object, string, type Input, toTrimmed, url, minLength } from "valibot"
 import { TextInput } from "@homelab/form"
-import { PrismaClient } from "@prisma/client"
+import { prisma } from "../prisma-client"
 import styles from "./app.css?inline"
 
-const SubConfigSchema = object({
-  backend: string([
-    toTrimmed(),
-    minLength(1, "backend 地址不能为空"),
-    url("backend 地址必须是合法URL"),
-  ]), // subconverter 后端地址
-  subs: string([toTrimmed(), minLength(1, "订阅链接不能为空")]), // 订阅链接 一行表示一个订阅
-  config: string([
-    toTrimmed(),
-    minLength(1, "规则地址不能为空"),
-    url("规则地址必须是合法URL"),
-  ]), // 规则配置地址
+const commonErrorMsg = (field_name: string, type_str: string = "string") => ({
+  required_error: `${field_name} 不能为空`,
+  invalid_error: `${field_name} 必须为 ${type_str}`,
 })
 
-type SubConfigForm = Input<typeof SubConfigSchema>
+const urlFormatErrorMsg = { message: "Invalid URL format" }
 
-const prisma = new PrismaClient()
+const SubConfigSchema = z.object({
+  backend: z
+    .string(commonErrorMsg("subconverter"))
+    .trim()
+    .url(urlFormatErrorMsg), // subconverter 后端地址
+  subs: z.string(commonErrorMsg("订阅链接")).trim(), // 订阅链接 一行表示一个订阅
+  config: z.string(commonErrorMsg("规则地址")).trim().url(urlFormatErrorMsg), // 规则配置地址
+})
+
+type SubConfigForm = z.infer<typeof SubConfigSchema>
 
 export const useSubConfigLoader = routeLoader$<InitialValues<SubConfigForm>>(
   async () => {
