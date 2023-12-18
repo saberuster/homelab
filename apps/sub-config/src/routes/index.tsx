@@ -10,6 +10,7 @@ import {
 import { TextInput } from "@homelab/form"
 import { prisma } from "../prisma-client"
 import styles from "./app.css?inline"
+import { convSubsToURI } from "~/subconverter"
 
 const commonErrorMsg = (field_name: string, type_str: string = "string") => ({
   required_error: `${field_name} 不能为空`,
@@ -61,7 +62,6 @@ export const useSaveSubConfig = formAction$<SubConfigForm>(
 )
 
 export default component$(() => {
-  console.log(styles)
   useStylesScoped$(styles)
   const [configForm, { Form, Field }] = useForm<SubConfigForm>({
     loader: useSubConfigLoader(),
@@ -74,16 +74,18 @@ export default component$(() => {
     const { backend, subs, config } = getValues(configForm, {
       shouldValid: true,
     })
-    const sub_info = subs
-      ?.split("\n")
-      .filter((url) => url)
-      .map((url) => encodeURIComponent(url))
-      .join("|")
-
+    const param_url = subs && convSubsToURI(subs)
     const config_info = config && encodeURIComponent(config)
-    const result_url = `${backend}/sub?target=clash&config=${config_info}&url=${sub_info}`
+
+    if (!backend || !param_url || !config_info) {
+      alert("参数不全或格式错误")
+      return
+    }
+
+    const result_url = `${backend}/sub?target=clash&config=${config_info}&url=${param_url}`
     // copy result_url to clipboard
     navigator.clipboard.writeText(result_url)
+    alert("已复制到剪贴板")
   })
 
   return (
